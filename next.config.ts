@@ -1,8 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  basePath: '/willwhite.dev',
+  output: 'export', 
   reactStrictMode: true,
   images: { unoptimized: true },
 };
