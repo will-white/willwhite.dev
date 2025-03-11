@@ -29,7 +29,7 @@ export function Footer() {
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium text-zinc-800 dark:text-zinc-200">
                 <NavLink href="/projects">Projects</NavLink>
                 <NavLink href="/articles">Articles</NavLink>
-                <NavLink href="/uses">Uses</NavLink>
+                <NavLink href="/resume">Resume</NavLink>
               </div>
             </div>
           </ContainerInner>

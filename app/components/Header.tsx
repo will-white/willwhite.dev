@@ -138,7 +138,7 @@ function MobileNavigation(
                 <MobileNavItem href="/">Home</MobileNavItem>
                 <MobileNavItem href="/articles">Articles</MobileNavItem>
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
-                <MobileNavItem href="/uses">Uses</MobileNavItem>
+                <MobileNavItem href="/resume">Resume</MobileNavItem>
               </ul>
             </nav>
           </PopoverPanel>
@@ -402,7 +402,7 @@ export function Header() {
                     }}
                   />
                   <Avatar
-                    large
+                    // large
                     className="block h-16 w-16 origin-left"
                     style={{ transform: 'var(--avatar-image-transform)' }}
                   />
