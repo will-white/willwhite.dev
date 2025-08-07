@@ -45,8 +45,9 @@ function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 }
 
 export const metadata: Metadata = {
-  title: 'William White',
-  description: 'Hi, I’m William White.',
+  title: 'William White - Senior Software Engineer',
+  description:
+    'Senior Software Engineer with a passion for creating innovative and user-friendly solutions.',
 };
 
 export default function Home() {
@@ -65,46 +66,32 @@ export default function Home() {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Hi, I’m William White, a Sr. Software Engineer and nerd.
+            I’m William White, a Senior Software Engineer.
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
-              Lorem ipsum odor amet, consectetuer adipiscing elit. Ridiculus
-              tortor litora dictumst, per nibh tempus malesuada duis penatibus.
-              In tincidunt eu libero cursus nulla quis. Sociosqu porta consequat
-              elementum congue suscipit urna metus pellentesque nibh. Tempus
-              parturient ullamcorper erat euismod mattis eget. Nulla scelerisque
-              erat eget lacus quisque leo. Et nunc hac montes turpis vestibulum
-              erat aptent. Litora ullamcorper suscipit dignissim convallis
-              sollicitudin diam vivamus placerat. Cras mollis ante a id luctus.
+              I am a Senior Software Engineer with a passion for creating
+              innovative and user-friendly solutions. I have a strong
+              background in full-stack development, with expertise in
+              JavaScript, React, Node.js, and a variety of other technologies.
             </p>
             <p>
-              Congue curae rutrum elementum convallis libero ac ad nullam.
-              Nascetur parturient sapien nisi interdum sit; diam diam.
-              Pellentesque feugiat ornare consectetur consectetur, ante potenti
-              in duis. Mollis congue porta aliquam aliquam interdum amet enim.
-              Himenaeos luctus ligula mus sollicitudin ligula lobortis.
-              Scelerisque est consectetur ante eget libero. Facilisis sit magnis
-              feugiat natoque et tempor.
+              I am a problem-solver at heart and enjoy tackling complex
+              challenges. I am also a strong believer in teamwork and
+              collaboration, and I am always looking for opportunities to learn
+              from and share my knowledge with others.
             </p>
             <p>
-              Pulvinar purus eleifend sociosqu dignissim ipsum fames fusce.
-              Tempus natoque volutpat himenaeos, litora pretium orci.
-              Ullamcorper luctus rutrum donec elementum inceptos scelerisque
-              tincidunt aptent pharetra. Ligula mauris nisi natoque arcu
-              porttitor sapien at fusce. Non torquent vitae metus faucibus nec
-              nunc convallis dapibus? Orci morbi condimentum est varius vitae.
-              Sollicitudin dui vulputate sociosqu mi lectus. Consectetur nullam
-              iaculis egestas lobortis consectetur.
+              Throughout my career, I have had the opportunity to work on a
+              variety of projects, from small-scale applications to large,
+              enterprise-level systems. I am proud of the work I have done and
+              the impact it has had on users.
             </p>
             <p>
-              Vel per in nunc vivamus scelerisque rhoncus eget fermentum etiam.
-              Posuere dis tellus leo efficitur iaculis sollicitudin proin
-              platea. Nostra rutrum neque lobortis porta pharetra vestibulum
-              curae. Euismod nunc per varius praesent fermentum sodales integer
-              inceptos blandit. Risus ut magnis libero vitae accumsan. Erat
-              viverra sociosqu pharetra nullam tellus nibh nullam facilisi.
-              Habitasse est posuere lectus torquent porta ultricies sodales.
+              I am always looking for new challenges and opportunities to grow as
+              a developer. If you have a project that you think I would be a
+              good fit for, or if you just want to connect, please don't
+              hesitate to reach out.
             </p>
           </div>
         </div>
