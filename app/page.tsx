@@ -90,7 +90,7 @@ export default function Home() {
             <p>
               I am always looking for new challenges and opportunities to grow as
               a developer. If you have a project that you think I would be a
-              good fit for, or if you just want to connect, please don't
+              good fit for, or if you just want to connect, please don&apos;t
               hesitate to reach out.
             </p>
           </div>
