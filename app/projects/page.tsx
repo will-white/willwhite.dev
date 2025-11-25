@@ -76,7 +76,7 @@ export default function Projects() {
       title="My creative footprint on the internet."
       intro="I’ve worked on tons of little projects but these are the ones that I’m most proud of. Some of them are open-source, so if you see something that piques your interest, check out the code!"
     >
-      <div className='grid gap-20'>
+      <div className="grid gap-20">
         <ul
           role="list"
           className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"

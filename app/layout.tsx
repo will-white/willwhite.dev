@@ -17,7 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="dark h-full antialiased"
+      suppressHydrationWarning
+    >
       <body className="flex h-full bg-zinc-50 dark:bg-black">
         <Providers>
           <div className="fixed inset-0 flex justify-center sm:px-8">

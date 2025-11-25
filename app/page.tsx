@@ -71,9 +71,9 @@ export default function Home() {
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
               I am a Senior Software Engineer with a passion for creating
-              innovative and user-friendly solutions. I have a strong
-              background in full-stack development, with expertise in
-              JavaScript, React, Node.js, and a variety of other technologies.
+              innovative and user-friendly solutions. I have a strong background
+              in full-stack development, with expertise in JavaScript, React,
+              Node.js, and a variety of other technologies.
             </p>
             <p>
               I am a problem-solver at heart and enjoy tackling complex
@@ -88,8 +88,8 @@ export default function Home() {
               the impact it has had on users.
             </p>
             <p>
-              I am always looking for new challenges and opportunities to grow as
-              a developer. If you have a project that you think I would be a
+              I am always looking for new challenges and opportunities to grow
+              as a developer. If you have a project that you think I would be a
               good fit for, or if you just want to connect, please don&apos;t
               hesitate to reach out.
             </p>
