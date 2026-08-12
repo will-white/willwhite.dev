@@ -50,6 +50,11 @@ const personSchema = {
     '@type': 'CollegeOrUniversity',
     name: 'University of Texas at Arlington',
   },
+  worksFor: {
+    '@type': 'Organization',
+    name: 'MapLarge',
+    url: 'https://www.maplarge.com',
+  },
   sameAs: [socials.github, socials.linkedin],
 };
 

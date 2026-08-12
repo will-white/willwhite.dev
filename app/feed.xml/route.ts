@@ -17,7 +17,7 @@ export async function GET() {
 
   const items = articles
     .map((article) => {
-      const url = `${siteUrl}/blog/${article.slug}`;
+      const url = `${siteUrl}/blog/${article.slug}/`;
       return `    <item>
       <title>${escapeXml(article.title)}</title>
       <link>${url}</link>

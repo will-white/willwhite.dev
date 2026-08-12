@@ -5,6 +5,9 @@ import k8s from '../images/logos/k8s.svg';
 import github from '../images/logos/github.svg';
 import skyslopeForms from '../images/logos/skyslope-forms.svg';
 import armtech from '../images/logos/armtech.png';
+import maplarge from '../images/logos/maplarge.svg';
+import rasi from '../images/logos/rasi.png';
+import statueCityCruises from '../images/logos/statue-city-cruises.webp';
 import { SimpleLayout } from '../components/SimpleLayout';
 import { Card } from '../components/Card';
 
@@ -54,6 +57,17 @@ const personalProjects: Project[] = [
 
 const companyProjects: Project[] = [
   {
+    name: 'MapLarge',
+    description:
+      'High-performance geospatial analytics platform powering rapid last-mile applications for operational AI. My current work.',
+    link: {
+      href: 'https://www.maplarge.com',
+      label: 'maplarge.com',
+    },
+    logo: maplarge,
+    tags: ['Geospatial', 'Big Data'],
+  },
+  {
     name: 'SkySlope Forms',
     description:
       'A beautiful and bespoke form pdf management tool specifically designed for real estate brokerages, agents, and property managers.',
@@ -74,6 +88,28 @@ const companyProjects: Project[] = [
     },
     logo: armtech,
     tags: ['C#', '.NET', 'Angular', 'MSSQL'],
+  },
+  {
+    name: 'RASI',
+    description:
+      'Restaurant accounting and management platform that helps operators drive profit through faster, more informed business decisions.',
+    link: {
+      href: 'https://rasiusa.com',
+      label: 'rasiusa.com',
+    },
+    logo: rasi,
+    tags: ['Fintech', 'SaaS'],
+  },
+  {
+    name: 'Statue City Cruises Ticketing',
+    description:
+      'Official ticketing platform for ferry service to the Statue of Liberty and Ellis Island, serving millions of visitors a year.',
+    link: {
+      href: 'https://statuecitycruises.com/tickets',
+      label: 'statuecitycruises.com',
+    },
+    logo: statueCityCruises,
+    tags: ['E-commerce', 'Ticketing'],
   },
 ];
 
