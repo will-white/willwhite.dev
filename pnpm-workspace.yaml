@@ -1,0 +1,5 @@
+# unrs-resolver arrives via eslint-config-next and has always installed unbuilt
+# here, falling back to its wasm binding. pnpm 11 turns an undecided build
+# script into a hard install error, so the existing behaviour is now explicit.
+allowBuilds:
+  unrs-resolver: false
