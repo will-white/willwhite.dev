@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -15,6 +16,9 @@ import {
 import clsx from 'clsx';
 
 import { Container } from './Container';
+import { CommandPalette } from './CommandPalette';
+import { navigation } from '../lib/site';
+import headshot from '../images/headshot.jpg';
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -135,10 +139,11 @@ function MobileNavigation(
             </div>
             <nav className="mt-6">
               <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
-                <MobileNavItem href="/">Home</MobileNavItem>
-                <MobileNavItem href="/articles">Articles</MobileNavItem>
-                <MobileNavItem href="/projects">Projects</MobileNavItem>
-                <MobileNavItem href="/resume">Resume</MobileNavItem>
+                {navigation.map((item) => (
+                  <MobileNavItem key={item.href} href={item.href}>
+                    {item.label}
+                  </MobileNavItem>
+                ))}
               </ul>
             </nav>
           </PopoverPanel>
@@ -181,10 +186,11 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
   return (
     <nav {...props}>
       <ul className="text-md flex rounded-full bg-white/90 px-3 font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
-        <NavItem href="/">Home</NavItem>
-        <NavItem href="/blog">Blog</NavItem>
-        <NavItem href="/projects">Projects</NavItem>
-        <NavItem href="/resume">Resume</NavItem>
+        {navigation.map((item) => (
+          <NavItem key={item.href} href={item.href}>
+            {item.label}
+          </NavItem>
+        ))}
       </ul>
     </nav>
   );
@@ -230,7 +236,7 @@ function AvatarContainer({
 }
 
 function Avatar({
-  // large = false,
+  large = false,
   className,
   ...props
 }: Omit<React.ComponentPropsWithoutRef<typeof Link>, 'href'> & {
@@ -243,8 +249,8 @@ function Avatar({
       className={clsx(className, 'pointer-events-auto')}
       {...props}
     >
-      {/* <Image
-        src={avatarImage}
+      <Image
+        src={headshot}
         alt=""
         sizes={large ? '4rem' : '2.25rem'}
         className={clsx(
@@ -252,7 +258,7 @@ function Avatar({
           large ? 'h-16 w-16' : 'h-9 w-9',
         )}
         priority
-      /> */}
+      />
     </Link>
   );
 }
@@ -260,8 +266,8 @@ function Avatar({
 export function Header() {
   const isHomePage = usePathname() === '/';
 
-  const headerRef = useRef<React.ElementRef<'div'>>(null);
-  const avatarRef = useRef<React.ElementRef<'div'>>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
   const isInitial = useRef(true);
 
   useEffect(() => {
@@ -377,7 +383,7 @@ export function Header() {
           <>
             <div
               ref={avatarRef}
-              className="order-last mt-[calc(theme(spacing.16)-theme(spacing.3))]"
+              className="order-last mt-[calc(4rem-0.75rem)]"
             />
             <Container
               className="top-0 order-last -mb-3 pt-3"
@@ -387,7 +393,7 @@ export function Header() {
               }}
             >
               <div
-                className="top-[var(--avatar-top,theme(spacing.3))] w-full"
+                className="top-[var(--avatar-top,0.75rem)] w-full"
                 style={{
                   position:
                     'var(--header-inner-position)' as React.CSSProperties['position'],
@@ -402,7 +408,7 @@ export function Header() {
                     }}
                   />
                   <Avatar
-                    // large
+                    large
                     className="block h-16 w-16 origin-left"
                     style={{ transform: 'var(--avatar-image-transform)' }}
                   />
@@ -420,7 +426,7 @@ export function Header() {
           }}
         >
           <Container
-            className="top-[var(--header-top,theme(spacing.6))] w-full"
+            className="top-[var(--header-top,1.5rem)] w-full"
             style={{
               position:
                 'var(--header-inner-position)' as React.CSSProperties['position'],
@@ -439,7 +445,8 @@ export function Header() {
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </div>
               <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
+                <div className="pointer-events-auto flex gap-4">
+                  <CommandPalette />
                   <ThemeToggle />
                 </div>
               </div>

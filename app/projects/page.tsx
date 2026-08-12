@@ -1,5 +1,5 @@
 import { type Metadata } from 'next';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 
 import k8s from '../images/logos/k8s.svg';
 import github from '../images/logos/github.svg';
@@ -8,9 +8,17 @@ import armtech from '../images/logos/armtech.png';
 import { SimpleLayout } from '../components/SimpleLayout';
 import { Card } from '../components/Card';
 
-const personalProjects = [
+type Project = {
+  name: string;
+  description: string;
+  link: { href: string; label: string };
+  logo: StaticImageData;
+  tags: string[];
+};
+
+const personalProjects: Project[] = [
   {
-    name: 'Personal Kuberentes Cluster',
+    name: 'Personal Kubernetes Cluster',
     description:
       'Spouse approved self hosted cluster driven by Kubernetes and GitOps using Flux.',
     link: {
@@ -18,6 +26,7 @@ const personalProjects = [
       label: 'github/home-k8s-cluster',
     },
     logo: k8s,
+    tags: ['Kubernetes', 'Talos', 'Flux', 'GitOps'],
   },
   {
     name: 'Dahua Companion',
@@ -28,10 +37,22 @@ const personalProjects = [
       label: 'github/dahua-companion',
     },
     logo: github,
+    tags: ['Go', 'MQTT', 'Home Assistant'],
+  },
+  {
+    name: 'AdGuard external-dns Sidecar',
+    description:
+      'Kubernetes sidecar that reconciles AdGuard Home DNS rewrites with live Ingress hosts, so a catch-all wildcard and per-service records can coexist. Zero dependencies, stdlib-only Go.',
+    link: {
+      href: 'https://github.com/will-white/adguard-external-dns-sidecar',
+      label: 'github/adguard-external-dns-sidecar',
+    },
+    logo: github,
+    tags: ['Go', 'Kubernetes', 'DNS'],
   },
 ];
 
-const companyProjects = [
+const companyProjects: Project[] = [
   {
     name: 'SkySlope Forms',
     description:
@@ -41,6 +62,7 @@ const companyProjects = [
       label: 'skyslope.com',
     },
     logo: skyslopeForms,
+    tags: ['.NET', 'Node.js', 'React', 'AWS'],
   },
   {
     name: 'AgriSompo AgriNet',
@@ -51,6 +73,7 @@ const companyProjects = [
       label: 'agrisompo.com',
     },
     logo: armtech,
+    tags: ['C#', '.NET', 'Angular', 'MSSQL'],
   },
 ];
 
@@ -65,6 +88,64 @@ function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   );
 }
 
+function ProjectSection({
+  title,
+  intro,
+  projects,
+}: {
+  title: string;
+  intro: string;
+  projects: Project[];
+}) {
+  return (
+    <section>
+      <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+        {title}
+      </h2>
+      <p className="mt-2 max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
+        {intro}
+      </p>
+      <ul
+        role="list"
+        className="mt-10 grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {projects.map((project) => (
+          <Card as="li" key={project.name}>
+            <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+              <Image
+                src={project.logo}
+                alt=""
+                className="h-8 w-8"
+                unoptimized
+              />
+            </div>
+            <h3 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
+              <Card.Link href={project.link.href} target="_blank">
+                {project.name}
+              </Card.Link>
+            </h3>
+            <Card.Description>{project.description}</Card.Description>
+            <div className="relative z-10 mt-4 flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-cyan-500 dark:text-zinc-200">
+              <LinkIcon className="h-6 w-6 flex-none" />
+              <span className="ml-2">{project.link.label}</span>
+            </p>
+          </Card>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export const metadata: Metadata = {
   title: 'Projects',
   description: 'My creative footprint on the internet.',
@@ -76,61 +157,17 @@ export default function Projects() {
       title="My creative footprint on the internet."
       intro="I’ve worked on tons of little projects but these are the ones that I’m most proud of. Some of them are open-source, so if you see something that piques your interest, check out the code!"
     >
-      <div className="grid gap-20">
-        <ul
-          role="list"
-          className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {personalProjects.map((project) => (
-            <Card as="li" key={project.name}>
-              <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                <Image
-                  src={project.logo}
-                  alt=""
-                  className="h-8 w-8"
-                  unoptimized
-                />
-              </div>
-              <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
-                <Card.Link href={project.link.href} target="_blank">
-                  {project.name}
-                </Card.Link>
-              </h2>
-              <Card.Description>{project.description}</Card.Description>
-              <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-cyan-500 dark:text-zinc-200">
-                <LinkIcon className="h-6 w-6 flex-none" />
-                <span className="ml-2">{project.link.label}</span>
-              </p>
-            </Card>
-          ))}
-        </ul>
-        <ul
-          role="list"
-          className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {companyProjects.map((project) => (
-            <Card as="li" key={project.name}>
-              <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                <Image
-                  src={project.logo}
-                  alt=""
-                  className="h-8 w-8"
-                  unoptimized
-                />
-              </div>
-              <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
-                <Card.Link href={project.link.href} target="_blank">
-                  {project.name}
-                </Card.Link>
-              </h2>
-              <Card.Description>{project.description}</Card.Description>
-              <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-cyan-500 dark:text-zinc-200">
-                <LinkIcon className="h-6 w-6 flex-none" />
-                <span className="ml-2">{project.link.label}</span>
-              </p>
-            </Card>
-          ))}
-        </ul>
+      <div className="space-y-20">
+        <ProjectSection
+          title="Professional work"
+          intro="Products I’ve helped build and run for real users at real scale."
+          projects={companyProjects}
+        />
+        <ProjectSection
+          title="Personal projects"
+          intro="Things I build and run for fun — all open source."
+          projects={personalProjects}
+        />
       </div>
     </SimpleLayout>
   );

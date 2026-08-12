@@ -15,8 +15,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -35,3 +33,7 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # Authenticates the build-time GitHub API fetch on the home page
+          # (unauthenticated requests are rate-limited on shared runners).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

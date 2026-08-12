@@ -30,8 +30,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -58,6 +56,10 @@ jobs:
 
       - name: Build with Next.js
         run: pnpm next build
+        env:
+          # Authenticates the build-time GitHub API fetch on the home page
+          # (unauthenticated requests are rate-limited on shared runners).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

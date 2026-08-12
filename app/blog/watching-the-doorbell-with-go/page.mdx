@@ -1,0 +1,85 @@
+import { ArticleLayout } from '../../components/ArticleLayout';
+
+export const article = {
+  author: 'William White',
+  date: '2026-07-20',
+  title: 'Watching the doorbell with Go',
+  description:
+    'dahua-companion is a Go service that does exactly one thing: turn a Dahua/Amcrest doorbell press into an MQTT event for Home Assistant. The interesting part is everything that can go wrong in between.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+My doorbell is a Dahua-based Amcrest unit, and like most cameras in that
+family it speaks a chatty, slightly archaic HTTP API. The vendor app
+works, but I wanted button presses flowing into Home Assistant with as
+little latency and as few moving parts as possible. That itch became
+[dahua-companion](https://github.com/will-white/dahua-companion), a
+small Go service with a deliberately tiny product surface: when someone
+presses the doorbell, publish to `doorbell/pressed`. One event, one MQTT
+topic, empty payload — the event itself is the signal.
+
+## The event stream hiding in the camera
+
+Dahua firmware exposes a long-poll subscription endpoint:
+
+```
+/cgi-bin/eventManager.cgi?action=attach&codes=[AlarmLocal]&heartbeat=5
+```
+
+You attach with HTTP digest auth and the camera pushes event lines as
+they happen — no polling, no cloud round-trip. A press arrives on your
+LAN as `Code=AlarmLocal;action=Start;...` milliseconds after the button
+is pushed. Subscribing to `codes=[AlarmLocal]` narrows the firehose down
+to the one event I care about, and the parser only fires on the `Start`
+action so `Stop` and `Pulse` lines don't double-ring the automation.
+
+## Most of the code is about failure
+
+The happy path is maybe twenty lines. The rest of the service exists
+because both ends of the pipe fail in quiet, annoying ways:
+
+- **Cameras reboot, and TCP doesn't notice.** After a camera restart
+  the socket can look open for minutes before OS keepalives give up. So
+  the stream is wrapped in a watchdog reader that resets a timer on
+  every read — the 5-second heartbeat keeps it fed, and 15 silent
+  seconds tears the connection down for a reconnect with capped backoff.
+- **MQTT clients lie about being connected.** With Paho's default
+  30-second keepalive, a dead broker socket happily swallows publishes
+  before anyone notices. The keepalive is tuned down to 10 seconds with
+  a 5-second ping timeout, and reconnect intervals are capped at 30
+  seconds instead of the default 10 minutes.
+- **A late doorbell event is worse than no event.** If the broker is
+  down, queued presses expire after 30 seconds rather than deliver
+  late — a doorbell press only matters while someone might still be at
+  the door. Staleness beats durability here, which is the opposite of
+  most queueing advice.
+
+## The pleasant parts
+
+Home Assistant support is just MQTT discovery: the service publishes a
+retained config describing a doorbell event entity, plus an availability
+topic backed by a last-will message, so the entity shows up (and goes
+`offline` honestly) with zero YAML on the Home Assistant side.
+
+Deployment is a static binary in a `FROM scratch` image — no shell, no
+runtime. Since scratch has no curl, the container healthcheck re-invokes
+the binary itself with a `-healthcheck` flag against its own `/health`
+endpoint, which only reports healthy when the MQTT connection, the event
+stream, and a live probe of the camera all check out.
+
+## Keeping it small on purpose
+
+The most useful design decision was refusing to let the tool grow. It
+does not transcode video, store clips, or try to be a dashboard — other
+tools do those jobs well. There's very little code, so there is very
+little to break, and nearly every constant in the repo carries a comment
+explaining _why_ it has that value. If you have a Dahua or Amcrest
+doorbell, the
+[repo is on GitHub](https://github.com/will-white/dahua-companion) —
+issues and PRs welcome.

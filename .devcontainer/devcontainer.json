@@ -1,22 +1,39 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+// For format details, see https://aka.ms/devcontainer.json
 {
-  "name": "Node.js & TypeScript",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:4-22-bookworm"
+  "name": "willwhite.dev",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:4-22-bookworm",
 
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
 
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  // Persist Claude Code auth and settings across container rebuilds.
+  "mounts": ["source=claude-code-config,target=/home/node/.claude,type=volume"],
 
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "yarn install",
+  "forwardPorts": [3000],
 
-  // Configure tool-specific properties.
-  // "customizations": {},
+  "containerEnv": {
+    // Let corepack install the pinned pnpm (package.json "packageManager")
+    // without an interactive confirmation prompt.
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
+  },
 
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+  "postCreateCommand": "corepack enable && pnpm install",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    }
+  }
 }
