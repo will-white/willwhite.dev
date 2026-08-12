@@ -14,12 +14,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/resume',
     '/uses',
   ].map((route) => ({
-    url: `${siteUrl}${route}`,
+    url: `${siteUrl}${route}/`,
     changeFrequency: 'monthly',
   }));
 
   const posts: MetadataRoute.Sitemap = articles.map((article) => ({
-    url: `${siteUrl}/blog/${article.slug}`,
+    url: `${siteUrl}/blog/${article.slug}/`,
     lastModified: article.date,
   }));
 

@@ -146,7 +146,16 @@ export default async function Home() {
                 Node.js along the way.
               </p>
               <p className="animate-fade-up [animation-delay:200ms]">
-                At SkySlope I worked on{' '}
+                These days I’m building with{' '}
+                <Link
+                  href="https://www.maplarge.com"
+                  target="_blank"
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-400"
+                >
+                  MapLarge
+                </Link>
+                , a high-performance geospatial analytics platform. Before that,
+                at SkySlope, I worked on{' '}
                 <Link
                   href="https://skyslope.com/products-services/forms/"
                   target="_blank"
@@ -160,7 +169,7 @@ export default async function Home() {
                 that cut cluster costs by 40%.
               </p>
               <p className="animate-fade-up [animation-delay:300ms]">
-                Before that I spent eight years at ARMtech Insurance Services
+                Earlier I spent eight years at ARMtech Insurance Services
                 building crop insurance software, including{' '}
                 <Link
                   href="https://www.agrisompo.com/resources/technology/agrinet/"
