@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import glob from 'fast-glob';
 
 interface Article {
@@ -9,7 +10,11 @@ interface Article {
 
 export interface ArticleWithSlug extends Article {
   slug: string;
+  readingTime: number;
 }
+
+const blogDir = './app/blog';
+const wordsPerMinute = 230;
 
 async function importArticle(
   articleFilename: string,
@@ -18,16 +23,19 @@ async function importArticle(
     default: React.ComponentType;
     article: Article;
   };
+  const source = await readFile(`${blogDir}/${articleFilename}`, 'utf8');
+  const words = source.split(/\s+/).filter(Boolean).length;
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    readingTime: Math.max(1, Math.round(words / wordsPerMinute)),
     ...article,
   };
 }
 
 export async function getAllArticles() {
   const articleFilenames = await glob('*/page.mdx', {
-    cwd: './app/blog',
+    cwd: blogDir,
   });
 
   const articles = await Promise.all(articleFilenames.map(importArticle));

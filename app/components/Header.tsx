@@ -16,9 +16,9 @@ import {
 import clsx from 'clsx';
 
 import { Container } from './Container';
-import { CommandPalette } from './CommandPalette';
+import { CommandPalette, type PaletteArticle } from './CommandPalette';
 import { navigation } from '../lib/site';
-import headshot from '../images/headshot.jpg';
+import avatar from '../images/headshot-avatar.webp';
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -250,7 +250,7 @@ function Avatar({
       {...props}
     >
       <Image
-        src={headshot}
+        src={avatar}
         alt=""
         sizes={large ? '4rem' : '2.25rem'}
         className={clsx(
@@ -263,7 +263,7 @@ function Avatar({
   );
 }
 
-export function Header() {
+export function Header({ articles }: { articles: PaletteArticle[] }) {
   const isHomePage = usePathname() === '/';
 
   const headerRef = useRef<HTMLDivElement>(null);
@@ -446,7 +446,7 @@ export function Header() {
               </div>
               <div className="flex justify-end md:flex-1">
                 <div className="pointer-events-auto flex gap-4">
-                  <CommandPalette />
+                  <CommandPalette articles={articles} />
                   <ThemeToggle />
                 </div>
               </div>

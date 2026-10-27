@@ -25,3 +25,26 @@
     animation: none;
   }
 }
+
+/* rehype-pretty-code emits both themes' colors as CSS variables on each
+   token; pick the one matching the active theme. */
+[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+}
+
+.dark [data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+}
+
+/* `#` link appended to MDX headings by rehype-autolink-headings. */
+.heading-anchor {
+  margin-left: 0.5rem;
+  font-weight: 400;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+:is(h2, h3, h4):hover > .heading-anchor {
+  opacity: 1;
+}

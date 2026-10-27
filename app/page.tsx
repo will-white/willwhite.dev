@@ -4,8 +4,9 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import { GitHubIcon, LinkedInIcon } from './components/SocialIcons';
 import { Card } from './components/Card';
-import { socials } from './lib/site';
-import headshot from './images/headshot.jpg';
+import { siteDescription, socials } from './lib/site';
+import { pageMetadata } from './lib/metadata';
+import headshot from './images/headshot.webp';
 
 function SocialLink({
   className,
@@ -52,6 +53,11 @@ function StarIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
     </svg>
   );
 }
+
+export const metadata = pageMetadata({
+  description: siteDescription,
+  path: '/',
+});
 
 type Repo = {
   name: string;
@@ -128,7 +134,7 @@ export default async function Home() {
             <div className="max-w-xs px-2.5 lg:max-w-none">
               <Image
                 src={headshot}
-                alt="headshot"
+                alt="William White at a mountain lake, with a dog in the background"
                 sizes="(min-width: 1024px) 32rem, 20rem"
                 className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
               />

@@ -1,4 +1,4 @@
-import { type Metadata } from 'next';
+import { pageMetadata } from '../lib/metadata';
 
 import { Card } from '../components/Card';
 import { SimpleLayout } from '../components/SimpleLayout';
@@ -16,7 +16,7 @@ function Article({ article }: { article: ArticleWithSlug }) {
           className="md:hidden"
           decorate
         >
-          {formatDate(article.date)}
+          {formatDate(article.date)} · {article.readingTime} min read
         </Card.Eyebrow>
         <Card.Description>{article.description}</Card.Description>
         <Card.Cta>Read article</Card.Cta>
@@ -26,17 +26,21 @@ function Article({ article }: { article: ArticleWithSlug }) {
         dateTime={article.date}
         className="mt-1 max-md:hidden"
       >
-        {formatDate(article.date)}
+        <span>
+          {formatDate(article.date)}
+          <span className="mt-1 block">{article.readingTime} min read</span>
+        </span>
       </Card.Eyebrow>
     </article>
   );
 }
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Blog',
   description:
     'Notes on software engineering, homelabs, and things I’ve built.',
-};
+  path: '/blog/',
+});
 
 export default async function Blog() {
   const articles = await getAllArticles();

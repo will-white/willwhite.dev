@@ -11,6 +11,35 @@ const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
 };
 
-const withMDX = createMDX({});
+// Plugins are named by string, not imported: Turbopack passes MDX options to
+// a loader and can only serialise plain data.
+const withMDX = createMDX({
+  options: {
+    rehypePlugins: [
+      // Build-time syntax highlighting; ships no client JS.
+      [
+        'rehype-pretty-code',
+        {
+          theme: { light: 'github-light', dark: 'github-dark' },
+          keepBackground: false,
+          defaultLang: 'plaintext',
+        },
+      ],
+      'rehype-slug',
+      [
+        'rehype-autolink-headings',
+        {
+          behavior: 'append',
+          properties: {
+            className: ['heading-anchor'],
+            ariaHidden: true,
+            tabIndex: -1,
+          },
+          content: { type: 'text', value: '#' },
+        },
+      ],
+    ],
+  },
+});
 
 export default withMDX(nextConfig);

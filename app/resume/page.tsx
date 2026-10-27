@@ -1,4 +1,4 @@
-import { type Metadata } from 'next';
+import { pageMetadata } from '../lib/metadata';
 import { Container } from '../components/Container';
 import { Button } from '../components/Button';
 
@@ -84,10 +84,11 @@ const skills: { category: string; items: string }[] = [
   },
 ];
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Resume',
   description: 'The resume of William White, Senior Software Engineer.',
-};
+  path: '/resume/',
+});
 
 function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (

@@ -1,12 +1,18 @@
 import { ImageResponse } from 'next/og';
 
-export const dynamic = 'force-static';
+export const ogImageSize = { width: 1200, height: 630 };
 
-export const alt = 'William White - Senior Software Engineer';
-export const size = { width: 1200, height: 630 };
-export const contentType = 'image/png';
-
-export default async function Image() {
+/* Rendered at build time by the og.png route handlers. They are route
+   handlers rather than opengraph-image.tsx files so the exported files end
+   in .png: GitHub Pages picks Content-Type from the extension, and the
+   file-based convention exports an extensionless `opengraph-image`. */
+export function renderOgImage({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
   return new ImageResponse(
     <div
       style={{
@@ -34,13 +40,14 @@ export default async function Image() {
       <div
         style={{
           display: 'flex',
-          fontSize: '84px',
+          fontSize: title.length > 32 ? '64px' : '84px',
           fontWeight: 700,
+          lineHeight: 1.1,
           color: '#fafafa',
           letterSpacing: '-0.025em',
         }}
       >
-        William White
+        {title}
       </div>
       <div
         style={{
@@ -50,7 +57,7 @@ export default async function Image() {
           color: '#a1a1aa',
         }}
       >
-        Senior Software Engineer
+        {subtitle}
       </div>
       <div
         style={{
@@ -63,6 +70,6 @@ export default async function Image() {
         willwhite.dev
       </div>
     </div>,
-    { ...size },
+    ogImageSize,
   );
 }

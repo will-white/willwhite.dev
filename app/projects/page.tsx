@@ -1,4 +1,4 @@
-import { type Metadata } from 'next';
+import { pageMetadata } from '../lib/metadata';
 import Image, { type StaticImageData } from 'next/image';
 
 import k8s from '../images/logos/k8s.svg';
@@ -182,10 +182,11 @@ function ProjectSection({
   );
 }
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Projects',
   description: 'My creative footprint on the internet.',
-};
+  path: '/projects/',
+});
 
 export default function Projects() {
   return (

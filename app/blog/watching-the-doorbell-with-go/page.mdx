@@ -1,4 +1,5 @@
 import { ArticleLayout } from '../../components/ArticleLayout';
+import { articleMetadata } from '../../lib/metadata';
 
 export const article = {
   author: 'William White',
@@ -8,12 +9,13 @@ export const article = {
     'dahua-companion is a Go service that does exactly one thing: turn a Dahua/Amcrest doorbell press into an MQTT event for Home Assistant. The interesting part is everything that can go wrong in between.',
 };
 
-export const metadata = {
-  title: article.title,
-  description: article.description,
-};
+export const slug = 'watching-the-doorbell-with-go';
 
-export default (props) => <ArticleLayout article={article} {...props} />;
+export const metadata = articleMetadata(article, slug);
+
+export default (props) => (
+  <ArticleLayout article={article} slug={slug} {...props} />
+);
 
 My doorbell is a Dahua-based Amcrest unit, and like most cameras in that
 family it speaks a chatty, slightly archaic HTTP API. The vendor app

@@ -1,4 +1,5 @@
 import { ArticleLayout } from '../../components/ArticleLayout';
+import { articleMetadata } from '../../lib/metadata';
 
 export const article = {
   author: 'William White',
@@ -8,12 +9,13 @@ export const article = {
     'Eight Lenovo Tinys, Talos Linux, and GitOps with Flux — how my self-hosted cluster went from a weekend liability to infrastructure my household actually relies on.',
 };
 
-export const metadata = {
-  title: article.title,
-  description: article.description,
-};
+export const slug = 'spouse-approved-kubernetes-homelab';
 
-export default (props) => <ArticleLayout article={article} {...props} />;
+export const metadata = articleMetadata(article, slug);
+
+export default (props) => (
+  <ArticleLayout article={article} slug={slug} {...props} />
+);
 
 "Spouse approved" is doing a lot of work in the description of my
 [home Kubernetes cluster](https://github.com/will-white/home-k8s-cluster).

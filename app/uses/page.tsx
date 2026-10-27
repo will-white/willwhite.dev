@@ -1,4 +1,4 @@
-import { type Metadata } from 'next';
+import { pageMetadata } from '../lib/metadata';
 
 import { Card } from '../components/Card';
 import { Section } from '../components/Section';
@@ -36,10 +36,11 @@ function Tool({
   );
 }
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Uses',
   description: 'Software and hardware I use to get things done.',
-};
+  path: '/uses/',
+});
 
 export default function Uses() {
   return (
