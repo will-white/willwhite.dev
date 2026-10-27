@@ -1,9 +1,7 @@
 import { pageMetadata } from '../lib/metadata';
 import { Container } from '../components/Container';
 import { Button } from '../components/Button';
-
-const resumePdfUrl =
-  'https://will-white.github.io/resume/William_White_Resume.pdf';
+import { resumePdfUrl, siteUrl, socials } from '../lib/site';
 
 type Role = {
   title: string;
@@ -105,7 +103,7 @@ function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 function RoleEntry({ role }: { role: Role }) {
   return (
-    <div className="md:grid md:grid-cols-4 md:items-baseline">
+    <div className="break-inside-avoid md:grid md:grid-cols-4 md:items-baseline">
       <div className="md:col-span-1">
         <p className="text-sm text-zinc-400 dark:text-zinc-500">
           {role.start} – {role.end}
@@ -118,7 +116,7 @@ function RoleEntry({ role }: { role: Role }) {
         <p className="mt-1 text-sm font-medium text-zinc-600 dark:text-zinc-400">
           {role.company} · {role.location}
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-zinc-600 marker:text-cyan-500 dark:text-zinc-400">
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-zinc-600 marker:text-cyan-500 dark:text-zinc-400 print:mt-2 print:space-y-1">
           {role.highlights.map((highlight) => (
             <li key={highlight}>{highlight}</li>
           ))}
@@ -130,16 +128,24 @@ function RoleEntry({ role }: { role: Role }) {
 
 export default function Resume() {
   return (
-    <Container className="mt-16 sm:mt-32">
+    <Container className="mt-16 sm:mt-32 print:mt-0">
       <header className="max-w-2xl">
         <h1 className="animate-fade-up text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-          Resume
+          <span className="print:hidden">Resume</span>
+          <span className="hidden print:inline">William White</span>
         </h1>
-        <p className="animate-fade-up mt-6 text-base text-zinc-600 [animation-delay:100ms] dark:text-zinc-400">
+        {/* The site header and footer are hidden in print, so carry the
+            contact details on the page itself. */}
+        <p className="mt-2 hidden text-sm text-zinc-600 print:block">
+          {siteUrl.replace('https://', '')} · {socials.email} ·{' '}
+          {socials.linkedin.replace('https://www.', '')} ·{' '}
+          {socials.github.replace('https://', '')}
+        </p>
+        <p className="animate-fade-up mt-6 text-base text-zinc-600 [animation-delay:100ms] dark:text-zinc-400 print:mt-3">
           Experienced polyglot engineer with over 10 years in the industry,
           specializing in scalable, high-performance B2B applications.
         </p>
-        <div className="animate-fade-up mt-6 [animation-delay:200ms]">
+        <div className="animate-fade-up mt-6 [animation-delay:200ms] print:hidden">
           <Button href={resumePdfUrl} target="_blank" variant="primary">
             Download PDF
             <ArrowDownIcon className="h-4 w-4 stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
@@ -147,23 +153,23 @@ export default function Resume() {
         </div>
       </header>
 
-      <div className="mt-16 space-y-16 sm:mt-20">
+      <div className="mt-16 space-y-16 sm:mt-20 print:mt-10 print:space-y-10">
         <section>
-          <h2 className="text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
+          <h2 className="break-after-avoid text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
             Experience
           </h2>
-          <div className="mt-8 space-y-12 border-l border-zinc-100 pl-6 md:border-none md:pl-0 dark:border-zinc-700/40">
+          <div className="mt-8 space-y-12 border-l border-zinc-100 pl-6 md:border-none md:pl-0 dark:border-zinc-700/40 print:mt-4 print:space-y-6">
             {experience.map((role) => (
               <RoleEntry key={`${role.title}-${role.start}`} role={role} />
             ))}
           </div>
         </section>
 
-        <section>
-          <h2 className="text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
+        <section className="break-inside-avoid">
+          <h2 className="break-after-avoid text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
             Skills
           </h2>
-          <dl className="mt-8 grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2">
+          <dl className="mt-8 grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2 print:mt-4 print:gap-y-3">
             {skills.map((skill) => (
               <div key={skill.category}>
                 <dt className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
@@ -177,11 +183,11 @@ export default function Resume() {
           </dl>
         </section>
 
-        <section>
-          <h2 className="text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
+        <section className="break-inside-avoid">
+          <h2 className="break-after-avoid text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
             Education
           </h2>
-          <p className="mt-8 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-8 text-sm text-zinc-600 dark:text-zinc-400 print:mt-4">
             <span className="font-semibold text-zinc-800 dark:text-zinc-100">
               B.S.E. in Computer Science and Engineering
             </span>{' '}

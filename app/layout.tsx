@@ -46,6 +46,18 @@ const personSchema = {
     url: 'https://www.maplarge.com',
   },
   sameAs: [socials.github, socials.linkedin],
+  knowsAbout: [
+    'C#',
+    '.NET',
+    'TypeScript',
+    'React',
+    'Angular',
+    'Node.js',
+    'Go',
+    'Kubernetes',
+    'SQL',
+    'AWS',
+  ],
 };
 
 export default async function RootLayout({
@@ -65,7 +77,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
         <Providers>
-          <div className="fixed inset-0 flex justify-center sm:px-8">
+          <div className="fixed inset-0 flex justify-center sm:px-8 print:hidden">
             <div className="flex w-full max-w-7xl lg:px-8">
               <div className="w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20" />
             </div>

@@ -13,6 +13,9 @@ export const navigation = [
   { href: '/uses', label: 'Uses' },
 ];
 
+export const resumePdfUrl =
+  'https://will-white.github.io/resume/William_White_Resume.pdf';
+
 export const socials = {
   github: 'https://github.com/will-white',
   linkedin: 'https://www.linkedin.com/in/will-white-dev/',
