@@ -7,13 +7,14 @@ push to `main`.
 
 ## Development
 
-Requires Node.js 20+ and [pnpm](https://pnpm.io/).
+Requires Node.js 24 and [pnpm](https://pnpm.io/).
 
 ```sh
 pnpm install    # install dependencies
 pnpm dev        # start the dev server at http://localhost:3000
 pnpm build      # production build + static export to ./out
 pnpm lint       # run ESLint
+pnpm check-links # after a build: fail on broken internal links in ./out
 pnpm format     # format with Prettier
 ```
 

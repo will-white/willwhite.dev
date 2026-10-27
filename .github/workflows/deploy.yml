@@ -21,9 +21,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Format, lint and build exactly as PRs are checked. Without this gate a push
+  # that fails CI but still builds would be published anyway.
+  ci:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
   # Build job
   build:
     runs-on: ubuntu-latest
+    needs: ci
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -46,7 +54,7 @@ jobs:
           path: |
             .next/cache
           # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx', '**.mdx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-

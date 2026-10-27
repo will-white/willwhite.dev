@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import {
@@ -25,7 +25,13 @@ type Command = {
   theme?: string;
 };
 
-const commands: Command[] = [
+export type PaletteArticle = {
+  slug: string;
+  title: string;
+  description: string;
+};
+
+const staticCommands: Command[] = [
   ...navigation.map((item) => ({
     id: `page-${item.href}`,
     name: item.label,
@@ -79,6 +85,18 @@ const commands: Command[] = [
   },
 ];
 
+const subscribeNever = () => () => {};
+
+/* ⌘ on Apple platforms, Ctrl elsewhere. The server render (and hydration)
+   assume ⌘, then the client corrects it. */
+function useShortcutModifier() {
+  return useSyncExternalStore(
+    subscribeNever,
+    () => (/Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘' : 'Ctrl '),
+    () => '⌘',
+  );
+}
+
 function MagnifyingGlassIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
@@ -92,8 +110,20 @@ function MagnifyingGlassIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   );
 }
 
-export function CommandPalette() {
+export function CommandPalette({ articles }: { articles: PaletteArticle[] }) {
   const [open, setOpen] = useState(false);
+  const modifier = useShortcutModifier();
+  const commands: Command[] = [
+    ...staticCommands.filter((command) => command.section === 'Pages'),
+    ...articles.map((article) => ({
+      id: `post-${article.slug}`,
+      name: article.title,
+      section: 'Blog posts',
+      keywords: article.description,
+      href: `/blog/${article.slug}`,
+    })),
+    ...staticCommands.filter((command) => command.section !== 'Pages'),
+  ];
   const [query, setQuery] = useState('');
   const router = useRouter();
   const { setTheme } = useTheme();
@@ -150,7 +180,7 @@ export function CommandPalette() {
       >
         <MagnifyingGlassIcon className="h-6 w-6 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
         <kbd className="hidden font-sans text-xs font-medium text-zinc-400 md:block dark:text-zinc-500">
-          ⌘K
+          {modifier}K
         </kbd>
       </button>
       <Dialog open={open} onClose={close} className="relative z-50">
@@ -168,7 +198,7 @@ export function CommandPalette() {
                 <MagnifyingGlassIcon className="h-5 w-5 flex-none stroke-zinc-400" />
                 <ComboboxInput
                   autoFocus
-                  placeholder="Search pages, links, and settings…"
+                  placeholder="Search pages, posts, links, and settings…"
                   className="h-12 w-full bg-transparent text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none dark:text-zinc-100"
                   onChange={(event) => setQuery(event.target.value)}
                 />

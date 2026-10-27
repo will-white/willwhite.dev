@@ -4,32 +4,22 @@ import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import type { Metadata } from 'next';
 import { Providers } from './providers';
+import { pageMetadata } from './lib/metadata';
+import { getAllArticles } from './lib/articles';
 import { siteDescription, siteTitle, siteUrl, socials } from './lib/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  // Defaults for pages without their own metadata (e.g. the 404 page).
+  ...pageMetadata({ description: siteDescription, path: '/' }),
   title: {
     template: '%s - William White',
     default: siteTitle,
   },
-  description: siteDescription,
   alternates: {
     types: {
       'application/rss+xml': `${siteUrl}/feed.xml`,
     },
-  },
-  openGraph: {
-    title: siteTitle,
-    description: siteDescription,
-    url: siteUrl,
-    siteName: 'William White',
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteTitle,
-    description: siteDescription,
   },
 };
 
@@ -58,11 +48,15 @@ const personSchema = {
   sameAs: [socials.github, socials.linkedin],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const articles = (await getAllArticles()).map(
+    ({ slug, title, description }) => ({ slug, title, description }),
+  );
+
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="flex h-full bg-zinc-50 dark:bg-black">
@@ -77,7 +71,7 @@ export default function RootLayout({
             </div>
           </div>
           <div className="relative flex w-full flex-col">
-            <Header />
+            <Header articles={articles} />
             <main className="flex-auto">{children}</main>
             <Footer />
           </div>
