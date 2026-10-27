@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json
 {
   "name": "willwhite.dev",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:5-22-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:5-24-bookworm",
 
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
@@ -13,13 +13,9 @@
 
   "forwardPorts": [3000],
 
-  "containerEnv": {
-    // Let corepack install the pinned pnpm (package.json "packageManager")
-    // without an interactive confirmation prompt.
-    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
-  },
-
-  "postCreateCommand": "corepack enable && pnpm install",
+  // Any pnpm will do: it switches itself to the version pinned in
+  // package.json "packageManager" on first run.
+  "postCreateCommand": "npm install -g pnpm && pnpm install",
 
   "customizations": {
     "vscode": {

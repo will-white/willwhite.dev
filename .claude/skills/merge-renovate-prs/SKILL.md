@@ -19,9 +19,10 @@ devcontainer image. The npm bumps and the Actions bumps need different
 verification (§4e).
 
 **Merging to `main` deploys.** `deploy.yml` runs on every push to `main` and
-publishes to Pages. There is no release gate, no tag, no manual approval. This
-is the opposite of a repo where main is a staging area — a bad merge is live in
-about two minutes.
+publishes to Pages. There is no tag and no manual approval; the only gate is
+that `deploy.yml` first calls `ci.yml` (a reusable workflow) and publishes only
+if format, lint, and build pass. This is the opposite of a repo where main is a
+staging area — a bad merge that still passes CI is live in a few minutes.
 
 The good news: **CI verifies nearly everything that deploy does.** `ci.yml` runs
 `prettier --check`, `pnpm lint`, and `pnpm build` — the same build `deploy.yml`
@@ -36,15 +37,38 @@ not even guarantee `main` stays green. Check `main` after every merge.
 
 ## 0. Preflight
 
-- **`gh` is not installed in Linux. Use `gh.exe`** (Windows GitHub CLI at
-  `/mnt/c/Program Files/GitHub CLI/gh.exe`). It is **not** on `PATH` here —
-  invoke it by full path, quoted:
+Which GitHub CLI works depends on where you are running. The commands in this
+skill use `"$G"` with `gh pr …` / `gh run …` subcommands; translate them to the
+REST forms below when those are unavailable.
+
+- **Local WSL: `gh` is not installed in Linux. Use `gh.exe`** (Windows GitHub
+  CLI at `/mnt/c/Program Files/GitHub CLI/gh.exe`). It is **not** on `PATH`
+  here — invoke it by full path, quoted:
   `G="/mnt/c/Program Files/GitHub CLI/gh.exe"`.
-- **Always pass `--repo will-white/willwhite.dev`.** `gh.exe` shells out to
-  Windows `git`, which rejects the WSL path with _"detected dubious ownership …
-  //wsl.localhost/…"_. Do not fix this with a global `safe.directory`; just pass
-  `--repo`.
-- Confirm auth: `"$G" api user -q .login` → `will-white`.
+  - **Always pass `--repo will-white/willwhite.dev`.** `gh.exe` shells out to
+    Windows `git`, which rejects the WSL path with _"detected dubious ownership
+    … //wsl.localhost/…"_. Do not fix this with a global `safe.directory`; just
+    pass `--repo`.
+  - Confirm auth: `"$G" api user -q .login` → `will-white`.
+- **Claude Code cloud session: `gh` is on `PATH`, but GraphQL is blocked** —
+  `gh pr list`, `gh pr checks`, `gh pr merge`, and `gh run list` all fail with
+  `HTTP 403: GitHub GraphQL is not available`. Only `gh api` (REST) works, or
+  the GitHub MCP tools. The equivalents, with `R=repos/will-white/willwhite.dev`:
+
+  ```bash
+  gh api "$R/pulls?state=open&per_page=100" --jq '.[]|"\(.number)\t\(.head.ref)\t\(.title)"'
+  gh api "$R/pulls/<pr>" --jq '"\(.mergeable) \(.mergeable_state) \(.head.sha)"'
+  gh api "$R/commits/<sha>/check-runs" --jq '.check_runs[]|"\(.name)=\(.status)/\(.conclusion)"'
+  gh api "$R/actions/jobs/<check-run-id>/logs" | tail -40     # failed job log
+  gh api -X PUT "$R/pulls/<pr>/merge" -f merge_method=squash -f sha=<head-sha>
+  gh api "$R/actions/runs?branch=main&per_page=6" --jq '.workflow_runs[]|"\(.conclusion)\t\(.name)\t\(.head_sha[0:7])"'
+  ```
+
+  Always pass `sha=` when merging: if Renovate force-pushed since you checked,
+  the merge is refused (HTTP 405/409) instead of merging a head you never saw
+  go green. Check-runs from the `dependabot` app clutter the commit list; ignore
+  them.
+
 - `main` is **unprotected** (`branches/main/protection` → 404), so red checks do
   not block merging. Do not treat that as permission — merging deploys.
 - Merge settings: squash, rebase, **and merge commits** are all enabled;
@@ -53,11 +77,16 @@ not even guarantee `main` stays green. Check `main` after every merge.
   the single biggest difference from other repos: you can fully reproduce CI
   before merging anything. Use that. `pnpm install`, `pnpm exec prettier
 --check .`, `pnpm lint`, and `pnpm build` all run in well under a minute.
-- The repo is on **pnpm 11** (`packageManager` in `package.json`), and pnpm
+- The repo is on **pnpm 12** (`packageManager` in `package.json`), and pnpm
   self-manages to that version, so a bare `pnpm` picks it up regardless of what
-  is installed globally — confirm with `pnpm --version`. pnpm 11 enforces
+  is installed globally — confirm with `pnpm --version`. pnpm 11+ enforces
   supply-chain policies at install time that pnpm 10 did not; see §4d before
-  regenerating any lockfile.
+  regenerating any lockfile. pnpm 12 also records itself in the lockfile (a
+  leading `packageManagerDependencies` document), so a pnpm bump touches
+  `pnpm-lock.yaml` too.
+- Run pnpm with **`CI=true`** in non-interactive shells, or installs that need
+  to recreate `node_modules` abort with
+  `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`.
 - `git fetch origin` first — Renovate merges land without touching the local
   clone.
 
@@ -78,7 +107,7 @@ Split the list by shape, because it determines how you verify:
 
 - **Lockfile-only PRs** (`pnpm-lock.yaml` alone) — the existing `^` range
   already permits the new version; Renovate just re-resolved. Reproduce with
-  `pnpm update`.
+  `pnpm update --no-save <pkg>` (§6.3 explains why `--no-save`).
 - **package.json PRs** — a pinned dep (`next`, `react`, `react-dom`) or a range
   bump (`eslint`, `prettier-plugin-tailwindcss`). Reproduce by editing
   `package.json` then `pnpm install --no-frozen-lockfile`.
@@ -94,7 +123,7 @@ git fetch origin && git checkout -b chore/verify-renovate-batch origin/main
 # apply every package.json bump the open PRs request, e.g.:
 sed -i 's/"next": "16.1.6"/"next": "16.3.0"/' package.json
 pnpm install --no-frozen-lockfile   # package.json bumps
-pnpm update                         # lockfile-only bumps: re-resolve within ranges
+pnpm update --no-save               # lockfile-only bumps: re-resolve within ranges
 pnpm exec prettier --check .
 pnpm lint
 pnpm build
@@ -102,9 +131,9 @@ pnpm build
 
 `pnpm list --depth 0` confirms each dep actually landed on the version its PR
 claims — `pnpm install` alone will **not** move an in-range dep, which is why
-`pnpm update` is a separate step.
+`pnpm update --no-save` is a separate step.
 
-Throw the branch away afterwards (`git checkout -- . && git checkout main &&
+Throw the branch away afterwards (`git reset --hard && git checkout main &&
 git branch -D chore/verify-renovate-batch`); its value is the verdict, not the
 lockfile. The real lockfiles ship in the PRs.
 
@@ -347,12 +376,25 @@ merge-and-watch loop is enough.
 - **Non-Renovate PRs** — review individually, never batch. Dependabot separately
   handles `.devcontainer/`.
 
-`renovate.json` is `config:recommended` plus
-`"minimumReleaseAge": "3 days"`, added alongside the pnpm 11 bump so Renovate
-stops proposing releases that pnpm's own supply-chain policy would reject at
-install time (§4d). If you ever see Renovate open a PR for a same-day release,
-that setting has been lost — restore it rather than working around the resulting
-CI failure.
+`renovate.json` is `config:recommended` plus:
+
+- `"minimumReleaseAge": "3 days"`, added alongside the pnpm 11 bump so Renovate
+  stops proposing releases that pnpm's own supply-chain policy would reject at
+  install time (§4d). If you ever see Renovate open a PR for a same-day
+  release, that setting has been lost — restore it rather than working around
+  the resulting CI failure.
+- `"rebaseWhen": "behind-base-branch"`, so Renovate rebases (and regenerates
+  the lockfile of) every open PR after each merge, instead of only once it
+  conflicts. This is what makes §6's pile-up mostly self-healing.
+- A **`dev dependencies (non-major)`** group: minor/patch bumps of
+  devDependencies arrive as one PR, not one lockfile conflict each. A prettier
+  bump inside it still needs §4a, and it keeps floor pairs (§4b) together.
+- Weekly `lockFileMaintenance` (Monday morning), which refreshes transitive
+  pins in one PR. Its diff is large but inert; check `pnpm list --depth 0`
+  shows no direct-dependency moves.
+- `@types/node` capped at `<25`, to match the Node 24 that CI and deploy run
+  (`node-version` in the workflows) and the devcontainer image. Move the cap
+  with the runtime, never on its own.
 
 ## 6. Merge
 
@@ -384,6 +426,8 @@ Merge one at a time, cheapest-first, re-checking after each:
    git merge origin/main            # take main's lockfile on conflict:
    git checkout --theirs pnpm-lock.yaml 2>/dev/null || git checkout origin/main -- pnpm-lock.yaml
    pnpm install --no-frozen-lockfile   # re-derives it from the merged package.json
+   pnpm update --no-save <pkg>         # lockfile-only PRs: re-apply the in-range bump
+   CI=true pnpm install --frozen-lockfile   # must pass before you push
    git add pnpm-lock.yaml && git commit --no-edit
    git push --force-with-lease
    ```
@@ -397,20 +441,24 @@ Merge one at a time, cheapest-first, re-checking after each:
    Prefer a regenerated lockfile even when GitHub says `MERGEABLE`, and always
    check `main` after each merge (§7) rather than trusting the PR's own check.
 
-   **`pnpm update <pkg>` also rewrites the range in `package.json`** (e.g.
-   `^8.5.3` → `^8.5.26`), which Renovate's lockfile-only PRs do not do. Do not
-   fix that with a bare `git checkout -- package.json`: the lockfile has already
-   recorded the new specifier, and CI fails with
-   `specifiers in the lockfile don't match specifiers in package.json`. Revert
-   `package.json` **then re-run `pnpm install --no-frozen-lockfile`** so the
-   lockfile's `specifier:` line is rewritten to match, keeping the new
-   `version:`.
+   **Always use `pnpm update --no-save <pkg>`.** A plain `pnpm update <pkg>`
+   also rewrites the range in `package.json` (e.g. `^8.5.3` → `^8.5.26`),
+   which Renovate's lockfile-only PRs do not do, and the lockfile records the
+   new specifier. Reverting `package.json` afterwards does not undo that: on
+   pnpm 12 neither `pnpm install --no-frozen-lockfile` nor `--lockfile-only`
+   rewrites the stale `specifier:` line (the pnpm 10/11 workaround), so CI
+   fails with `specifiers in the lockfile don't match specifiers in
+package.json`. `--no-save` leaves `package.json` alone and produces exactly
+   Renovate's lockfile — verified byte-identical against #131.
 
-4. **Renovate rebases branches while you work.** It may fix a conflict before
-   you do, which makes `git push --force-with-lease` fail — harmless if its head
-   is already green, since the PR merges anyway. Re-survey (§1) before doing
-   local work on any branch; several PRs in a backlog will have fixed
-   themselves. Expect **new PRs to appear mid-run** too (this is how the Actions
+4. **Renovate rebases branches while you work** — with
+   `rebaseWhen: behind-base-branch`, every open PR, within minutes of each
+   merge. Before regenerating anything by hand, re-survey (§1) and give
+   Renovate a few minutes: a PR whose head now contains `main` and is green
+   needs nothing from you. If you do push, Renovate may push over you (or you
+   over it), which makes `git push --force-with-lease` fail — harmless if its
+   head is already green, since the PR merges anyway. Merge with the head SHA
+   you watched go green (§0), never a newer one. Expect **new PRs to appear mid-run** too (this is how the Actions
    majors showed up); re-list open PRs before declaring the backlog clear.
 5. **Always let CI go green before merging**, even on a bump you verified in §2.
    Merging deploys, and the §2 run validated the _combined_ state, not each
@@ -419,6 +467,9 @@ Merge one at a time, cheapest-first, re-checking after each:
 ### Gotchas
 
 - Shell is **bash**; `gh.exe` needs its full quoted path (`"$G"`).
+- `git checkout -- .` restores the worktree **from the index**, so a lockfile
+  you already `git add`-ed survives it, and later local checks run against it.
+  Use `git reset --hard` to throw away a failed regeneration.
 - Never `git push origin main` — branch, PR, merge, even though main is
   unprotected.
 - If Renovate **auto-closes** a PR whose branch conflicted (`state: CLOSED,
@@ -436,13 +487,16 @@ mergedAt: null`) and the bump is still wanted, either wait for Renovate to
   --jq '.[] | "\(.conclusion)\t\(.workflowName)\t\(.headSha[0:7])"'
 ```
 
-Both **`CI`** and **`Deploy Next.js site to Pages`** must be green on the final
-`main` SHA. The deploy is the part CI never rehearsed — confirm it, and confirm
-the live site still renders, before calling the backlog clear.
+On `main`, CI runs **inside** `Deploy Next.js site to Pages` — its jobs are
+`ci / lint-and-build`, `build`, and `deploy`, in that order. (The standalone
+`CI` workflow runs only on PRs.) All three must be green on the final `main`
+SHA. The deploy is the part CI never rehearsed — confirm it, and confirm the
+live site still renders, before calling the backlog clear.
 
 Check this **after every merge**, not just at the end. A green PR check does not
-imply a green `main` (§6.3), and because `deploy.yml` fires on each push, a
-broken `main` is a skipped deploy. Waiting for the run to settle on the new head
+imply a green `main` (§6.3), and because the deploy now waits on CI, a broken
+`main` is a skipped deploy — the site stays on the last good build until the
+next push fixes it. Waiting for the run to settle on the new head
 also avoids a trap: `gh pr checks` reports the _previous_ push's completed run
 for a few seconds after a force-push, which reads as a stale failure. Match on
 the head SHA instead:

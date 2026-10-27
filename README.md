@@ -7,7 +7,7 @@ push to `main`.
 
 ## Development
 
-Requires Node.js 20+ and [pnpm](https://pnpm.io/).
+Requires Node.js 24 and [pnpm](https://pnpm.io/).
 
 ```sh
 pnpm install    # install dependencies

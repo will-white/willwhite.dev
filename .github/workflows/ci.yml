@@ -3,8 +3,17 @@ name: CI
 on:
   pull_request:
     branches: ['main']
-  push:
-    branches: ['main']
+  # Pushes to main run this via deploy.yml, which gates the deploy on it.
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  # A new push to a PR supersedes its in-flight run. Calls from deploy.yml are
+  # already serialised by its 'pages' group, so each gets a unique group here.
+  group: ${{ github.event_name == 'pull_request' && format('ci-{0}', github.ref) || format('ci-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint-and-build:
