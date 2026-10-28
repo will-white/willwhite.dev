@@ -4,7 +4,8 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import { GitHubIcon, LinkedInIcon } from './components/SocialIcons';
 import { Card } from './components/Card';
-import { siteDescription, socials } from './lib/site';
+import { resumePdfUrl, siteDescription, socials } from './lib/site';
+import { Button } from './components/Button';
 import { pageMetadata } from './lib/metadata';
 import headshot from './images/headshot.webp';
 
@@ -227,6 +228,19 @@ export default async function Home() {
                 {socials.email}
               </SocialLink>
             </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/resume" variant="primary">
+                View resume
+              </Button>
+              <Button
+                href={resumePdfUrl}
+                target="_blank"
+                variant="secondary"
+                data-goatcounter-click="resume-pdf-home"
+              >
+                Download PDF
+              </Button>
+            </div>
           </div>
         </div>
       </Container>

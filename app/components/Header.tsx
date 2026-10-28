@@ -373,7 +373,7 @@ export function Header({ articles }: { articles: PaletteArticle[] }) {
   return (
     <>
       <header
-        className="pointer-events-none relative z-50 flex flex-none flex-col"
+        className="pointer-events-none relative z-50 flex flex-none flex-col print:hidden"
         style={{
           height: 'var(--header-height)',
           marginBottom: 'var(--header-mb)',

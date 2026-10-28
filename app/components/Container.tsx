@@ -6,8 +6,10 @@ export function ContainerOuter({
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
   return (
-    <div className={clsx('sm:px-8', className)} {...props}>
-      <div className="mx-auto h-full w-full max-w-7xl lg:px-8">{children}</div>
+    <div className={clsx('sm:px-8 print:px-0', className)} {...props}>
+      <div className="mx-auto h-full w-full max-w-7xl lg:px-8 print:px-0">
+        {children}
+      </div>
     </div>
   );
 }
@@ -19,10 +21,15 @@ export function ContainerInner({
 }: React.ComponentPropsWithoutRef<'div'>) {
   return (
     <div
-      className={clsx('relative h-full px-4 sm:px-8 lg:px-12', className)}
+      className={clsx(
+        'relative h-full px-4 sm:px-8 lg:px-12 print:px-0',
+        className,
+      )}
       {...props}
     >
-      <div className="mx-auto h-full max-w-2xl lg:max-w-5xl">{children}</div>
+      <div className="mx-auto h-full max-w-2xl lg:max-w-5xl print:max-w-none">
+        {children}
+      </div>
     </div>
   );
 }

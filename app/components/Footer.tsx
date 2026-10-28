@@ -39,7 +39,7 @@ function SocialIconLink({
 
 export function Footer() {
   return (
-    <footer className="mt-8 flex-none">
+    <footer className="mt-8 flex-none print:hidden">
       <ContainerOuter>
         <div className="border-t border-zinc-100 pt-10 pb-16 dark:border-zinc-700/40">
           <ContainerInner>

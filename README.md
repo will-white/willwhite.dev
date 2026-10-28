@@ -18,6 +18,14 @@ pnpm check-links # after a build: fail on broken internal links in ./out
 pnpm format     # format with Prettier
 ```
 
+## Analytics
+
+Page views and resume PDF downloads are counted with
+[GoatCounter](https://www.goatcounter.com/) (no cookies). It is off unless the
+`GOATCOUNTER_CODE` repository variable is set (Settings → Secrets and
+variables → Actions → Variables) to the site code, the `xyz` in
+`xyz.goatcounter.com`. The next deploy picks it up.
+
 ## Credits
 
 The design is based on the [Spotlight](https://spotlight.tailwindui.com/)

@@ -2,8 +2,27 @@
 @plugin '@tailwindcss/typography';
 
 /* next-themes toggles the `dark` class on <html>, so dark: must key off the
-   class rather than the default prefers-color-scheme media query. */
-@custom-variant dark (&:where(.dark, .dark *));
+   class rather than the default prefers-color-scheme media query. Screen
+   only: printing (e.g. the resume) always uses the light palette, since
+   dark-theme text is near-white and vanishes on paper. */
+@custom-variant dark {
+  @media screen {
+    &:where(.dark, .dark *) {
+      @slot;
+    }
+  }
+}
+
+@page {
+  margin: 0.5in;
+}
+
+/* Everything is sized in rem, so this one value scales the printed page. */
+@media print {
+  html {
+    font-size: 12px;
+  }
+}
 
 @keyframes fade-up {
   from {
