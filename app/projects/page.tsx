@@ -20,6 +20,8 @@ type Project = {
   tags: string[];
   /** Blog post about the project, if there is one. */
   writeUp?: string;
+  /** What I personally did on it, for professional work. */
+  contribution?: string;
 };
 
 const personalProjects: Project[] = [
@@ -82,6 +84,8 @@ const companyProjects: Project[] = [
     },
     logo: skyslopeForms,
     tags: ['.NET', 'Node.js', 'React', 'AWS'],
+    contribution:
+      'Senior engineer, 2022–2024. Helped keep it at 99.999% uptime for 10,000+ daily concurrent users, and led a streaming and deferred-execution effort that cut cluster costs by 40%.',
   },
   {
     name: 'AgriSompo AgriNet',
@@ -93,6 +97,8 @@ const companyProjects: Project[] = [
     },
     logo: armtech,
     tags: ['C#', '.NET', 'Angular', 'MSSQL'],
+    contribution:
+      'Eight years at ARMtech Insurance Services, 2014–2022. Built a unified single sign-on for 10,000+ users and a 45x speedup of a core processing service.',
   },
   {
     name: 'RASI',
@@ -166,6 +172,14 @@ function ProjectSection({
               </Card.Link>
             </h3>
             <Card.Description>{project.description}</Card.Description>
+            {project.contribution && (
+              <p className="relative z-10 mt-3 text-sm text-zinc-700 dark:text-zinc-300">
+                <span className="font-semibold text-zinc-800 dark:text-zinc-100">
+                  My part:
+                </span>{' '}
+                {project.contribution}
+              </p>
+            )}
             <div className="relative z-10 mt-4 flex flex-wrap gap-2">
               {project.tags.map((tag) => (
                 <span

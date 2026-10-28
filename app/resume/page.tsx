@@ -57,7 +57,7 @@ const experience: Role[] = [
 const skills: { category: string; items: string }[] = [
   {
     category: 'Languages',
-    items: 'C#, TypeScript, JavaScript, Python, Java, SQL',
+    items: 'C#, TypeScript, JavaScript, Go, Python, Java, SQL',
   },
   {
     category: 'Frameworks & Libraries',
@@ -67,6 +67,10 @@ const skills: { category: string; items: string }[] = [
   {
     category: '.NET',
     items: '.NET Core, Web API, EF, WCF, WPF, MSTest, xUnit, NUnit',
+  },
+  {
+    category: 'Cloud Native',
+    items: 'Docker, Kubernetes, Talos Linux, Flux (GitOps)',
   },
   {
     category: 'Cloud',
@@ -153,7 +157,7 @@ export default function Resume() {
         </div>
       </header>
 
-      <div className="mt-16 space-y-16 sm:mt-20 print:mt-10 print:space-y-10">
+      <div className="mt-16 space-y-16 sm:mt-20 print:mt-6 print:space-y-6">
         <section>
           <h2 className="break-after-avoid text-sm font-semibold tracking-widest text-zinc-400 uppercase dark:text-zinc-500">
             Experience
