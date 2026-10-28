@@ -68,6 +68,9 @@ jobs:
           # Authenticates the build-time GitHub API fetch on the home page
           # (unauthenticated requests are rate-limited on shared runners).
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GoatCounter site code (the "xyz" in xyz.goatcounter.com), set as
+          # a repository variable. Unset means the site ships no analytics.
+          NEXT_PUBLIC_GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

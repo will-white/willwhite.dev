@@ -232,7 +232,12 @@ export default async function Home() {
               <Button href="/resume" variant="primary">
                 View resume
               </Button>
-              <Button href={resumePdfUrl} target="_blank" variant="secondary">
+              <Button
+                href={resumePdfUrl}
+                target="_blank"
+                variant="secondary"
+                data-goatcounter-click="resume-pdf-home"
+              >
                 Download PDF
               </Button>
             </div>

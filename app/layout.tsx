@@ -2,6 +2,7 @@ import './globals.css';
 
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { Analytics } from './components/Analytics';
 import type { Metadata } from 'next';
 import { Providers } from './providers';
 import { pageMetadata } from './lib/metadata';
@@ -88,6 +89,7 @@ export default async function RootLayout({
             <Footer />
           </div>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
